@@ -3,34 +3,37 @@
 (define (swap A k j)
   (define a (list-ref A k))
   (define b (list-ref A j))
-  (+ 1 2))
+  (list-set (list-set A k b) j a)
+  )
 
-(define (heapify A i)
-  (define n (length A))
+(define (heapify A n i)
  (define largest i)
  (define l (+ (* 2 i) 1))
  (define r (+ (* 2 i) 2))
  
- (when (and (<= l n) (> (list-ref A l) (list-ref A i)))
-  (= largest l))
- (when(and (<= l n) (> (list-ref A l) (list-ref A i)))
-  (= largest l))
- (when(not (equal? largest i))
-  (heapify A largest))
+ (cond [(and (< l n) (> (list-ref A l) (list-ref A i)))
+  (set! largest l)]
+ [(and (< r n) (> (list-ref A r) (list-ref A i)))
+  (set! largest r)])
+ (if (not (equal? largest i))
+   (heapify (swap A i largest) n largest) A)
 )
 
 (define (loop1 A i)
-  (if(< i 0) A
-     [(heapify A i)
-     (loop1 A (- i 1))]))
+  (cond
+    [(< i 0) A]
+  [(loop1 (heapify A (length A) i) (- i 1))]))
 
 (define (loop2 A j)
-  (if(< j 0) A [(swap(A 0 j)) (heapify A )]))
+  (cond
+    [(< j 0) A]
+     [(loop2 (heapify (swap A 0 j) j 0) (- j 1))]))
 
-(define (sort A)
-  (define n (length A))
-  (define i (-(/ n 2) 1))
-  (loop1 A i)
+(define (sort A n)
+  (define i (floor (-(/ n 2) 1)))
   (define j (- n 1))
-  (loop2 A j)
+  (writeln (loop2 (loop1 A i) j))
 )
+
+(sort '(1 7 5 4 3) (length '(1 7 5 4 3)))
+
