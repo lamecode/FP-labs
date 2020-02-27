@@ -1,5 +1,4 @@
 #lang Racket
- ;(define i (-(/ (list-length A) 2) 1))
 (define (swap A k j)
   (define a (list-ref A k))
   (define b (list-ref A j))
@@ -16,18 +15,6 @@
   (set! largest r))
  (if (not (equal? largest i))
    (heapify (swap A i largest) n largest) A)  
-; (when (and (< l (length A)) (< r (length A)))
-;(write (list-ref A l))
-;  (write " > ")
-;  (write (list-ref A largest))
-;   (writeln " line")
-;   )
-; (cond [(and (< l n) (> (list-ref A l) (list-ref A largest)))
-;  (set! largest l)]
-; [(and (< r n) (> (list-ref A r) (list-ref A largest)))
-;  (set! largest r)])
-; (if (not (equal? largest i))
-;   (heapify (swap A i largest) n largest) A)
 )
 
 (define (loop1 A i)
