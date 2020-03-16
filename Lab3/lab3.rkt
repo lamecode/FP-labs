@@ -15,10 +15,31 @@
                  (append row (list " "))))
   (define (->string row) (string-join row "\t" #:after-last "\n"))
   (string-append* (map ->string (cons head rows))))
-
-(define csv-file 
-  (file->string "convertcsv.txt"))
  
-(display (all-rows (open-input-string csv-file)))
 
-(define (cli )(writeln "Ласкаво просимо до lab 3 cli!Будь ласка, введіть команду"))
+(define (cli)
+  (writeln "Ласкаво просимо до lab 3 cli!Будь ласка, введіть команду")
+  (define option (read-line (current-input-port)))
+  (define scope1 (string-length option))
+  (define scope2 (string-length option))
+  (when (> scope1 6)(set! scope1 (substring option 4 6))
+    (set! scope2 (substring option (- (string-length option) 2))))
+  (define command-syntax (and (string-ci=? (substring option 0 4) "load") (and (string-ci=? scope1 "(\"") (string-ci=? scope2 "\")"))))
+  (define filename (substring option 6 (- (string-length option) 2)))
+  (define file-format 0)
+  (when (> (string-length filename) 4)
+    (set! file-format (substring filename (- (string-length filename) 4))))
+   (if(equal? command-syntax #t)
+      (if(string-ci=? file-format ".txt")
+         (cond
+           [(string-ci=? filename "convertcsv.txt")
+            (define csv-file (file->string "convertcsv.txt"))
+            (display (all-rows (open-input-string csv-file)))]
+           [(string-ci=? filename "convertcsv.txt")
+            (define csv-file (file->string "convertcsv.txt"))
+            (display (all-rows (open-input-string csv-file)))])
+         (writeln "Невірно введено формат файлу. Будь ласка, спробуйте ще.")
+         )
+      (writeln "Невірно введено команду. Будь ласка, спробуйте ще.")
+ ))
+(cli )
