@@ -9,14 +9,16 @@
  
 (define (all-rows port)
   (define read-row (make-reader port))
-  (define head (append (read-row) '("")))
+  (define head (append (read-row) '("\t")))
   (define rows (for/list ([row (in-producer read-row '())])
-                (define xs (map string->number row))
-                 (append row (list 1 2 3))))
+                 (define xs (map string->number row))
+                 (append row (list " "))))
   (define (->string row) (string-join row "\t" #:after-last "\n"))
   (string-append* (map ->string (cons head rows))))
 
 (define csv-file 
-  (file->string "convertcsv.csv"))
+  (file->string "convertcsv.txt"))
  
 (display (all-rows (open-input-string csv-file)))
+
+(define (cli )(writeln "Ласкаво просимо до lab 3 cli!Будь ласка, введіть команду"))
