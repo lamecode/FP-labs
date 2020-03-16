@@ -32,11 +32,17 @@
    (if(equal? command-syntax #t)
       (if(string-ci=? file-format ".txt")
          (cond
-           [(string-ci=? filename "convertcsv.txt")
-            (define csv-file (file->string "convertcsv.txt"))
+           [(string-ci=? filename "mps-declarations_rada.txt")
+            (define csv-file (file->string "mps-declarations_rada.txt"))
             (display (all-rows (open-input-string csv-file)))]
-           [(string-ci=? filename "convertcsv.txt")
-            (define csv-file (file->string "convertcsv.txt"))
+           [(string-ci=? filename "mp-posts_full.txt")
+            (define csv-file (file->string "mp-posts_full.txt"))
+            (display (all-rows (open-input-string csv-file)))]
+           [(string-ci=? filename "map_zal-skl9.txt")
+            (define csv-file (file->string "map_zal-skl9.txt"))
+            (display (all-rows (open-input-string csv-file)))]
+           [(string-ci=? filename "plenary_register_mps-skl9.txt")
+            (define csv-file (file->string "plenary_register_mps-skl9.txt"))
             (display (all-rows (open-input-string csv-file)))])
          (writeln "Невірно введено формат файлу. Будь ласка, спробуйте ще.")
          )
