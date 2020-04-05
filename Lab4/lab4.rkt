@@ -9,8 +9,8 @@
  
 (define (all-rows port)
   (define read-row (make-reader port))
-  (define head (append (read-row) '("\t")))
-;  (writeln ())
+  (define head (string-split (string-replace (string-replace (car (read-row)) "\"" "") "\uFEFF" "")))
+;  (writeln )
   (define rows (for/list ([row (in-producer read-row '())])
                  (define xs (map string->number row))
                  (append row (list " "))))
