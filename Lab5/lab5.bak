@@ -2,10 +2,7 @@
 (require srfi/13)
 (require "helper_functions.rkt" "make-reader.rkt" "sort.rkt" "shunting-yard.rkt" "get-condition.rkt")
 
-;SELECT * FROM map_zal-skl9.csv WHERE col=28 AND ( title="Вільне місце" OR title="Гривко Сергій Дмитрович" )
-;SELECT row FROM map_zal-skl9.csv ORDER BY title
-;SELECT Max(id_fr) FROM map_zal-skl9.csv
-;SELECT Avg(col) FROM map_zal-skl9.csv
+
 ;------------------------------------------------------------------SELECT_WHERE_command-----------------------------------------------------------------------
 (define (select-where port command)
   (define before-part (string-split(substring command 0 (+ (string-contains command " WHERE") 6))))
@@ -57,25 +54,12 @@
   (define contains-column (aremembers? column-name head))
   (when (not contains-column)
     (error 'помилка "невірно введено назви колонок. Будь ласка, спробуйте ще"))
-  (when (not (ismember? (seventh command) head))
-       (error 'помилка "невірно введено назву колонки. Будь ласка, спробуйте ще"))
-     (define sort-by (seventh command))
-     (define rows (for/list ([row (in-producer read-row '())])
-                 (append row (list "\n"))))
-     (define col-data (for/list ([row rows])
-                 (define column (multiple-list-ref row (multiple-index head (list sort-by))))
-                  (string-join column)))
-  (define cols
-    (cond
-       [(or (eq? (length command) 7) (string-ci=? (eighth command) "ASC")) (sort (for/list ([row rows])
+  (define checker (list "random row"))
+  (define rows (remove-duplicates (for/list ([row (in-producer read-row '())])
                  (define column (multiple-list-ref row (multiple-index head column-name)))
-                  (append column (list "\n"))) col-data)]
-        [(string-ci=? (eighth command) "DESC") (reverse (sort (for/list ([row rows])
-                 (define column (multiple-list-ref row (multiple-index head column-name)))
-                  (append column (list "\n"))) col-data))]
-         [else (error 'помилка "невірно введено порядок. Будь ласка, спробуйте ще")]))
+                  (append column (list "\n")))))
   (define (->string row) (string-join row "\t"))
-  (string-append* (map ->string (cons (append (multiple-list-ref head (multiple-index head column-name)) (list "\n")) cols)))])
+  (string-append* (map ->string (cons (append (multiple-list-ref head (multiple-index head column-name)) (list "\n")) rows)))])
   )
 ;------------------------------------------------------------------ORDER_BY_command---------------------------------------------------------------------------
 
@@ -187,7 +171,7 @@
   )
 ;------------------------------------------------------------------MAX----------------------------------------------------------------------------------
 
-
+;SELECT * FROM map_zal-skl9.csv WHERE col=28 AND ( title="Вільне місце" OR title="Гривко Сергій Дмитрович" )
 ;--------------------------------------------------------initialazer-----------------------------------------------------------------------
 (define (cli)
   (writeln "Ласкаво просимо до lab 4 cli!Будь ласка, введіть команду")
