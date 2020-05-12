@@ -2,7 +2,7 @@
 (require srfi/13)
 (require "helper_functions.rkt" "get-condition.rkt" "make-reader.rkt")
 
-;SELECT * CASE WHEN row > 5 THEN "Рядок більший за 5" WHEN row = 5 THEN "Рядок рівний 5" ELSE "Рядок менший за 5" END AS QuantityText FROM map_zal-skl9.csv
+;SELECT col, row, CASE WHEN row > 5 THEN "Рядок більший за 5" WHEN row = 5 THEN "Рядок рівний 5" ELSE "Рядок менший за 5" END AS Txt FROM map_zal-skl9.csv
 ;--------------------------------------------------------case-----------------------------------------------------------------------
 (define (case port command)
    (define read-row (make-reader port))
@@ -28,18 +28,17 @@
        (map (lambda (x) (substring x 0 (- (string-length x) 1))) (remove "CASE" (cdr before-case)))))
    (define conditions (append (get-n temp (- (length temp) 1)) (string-split (car (list-tail temp (- (length temp) 1))) " ELSE ")))
     (cond
-    [(string-ci=? col "*")
+    [(and (string? col)(string-ci=? col "*"))
       (define rows (for/list ([row (in-producer read-row '())])
                      (append row (list (get-line conditions head row)) (list "\n"))))
   (define (->string row) (string-join row "\t"))
   (string-append* (map ->string (cons (append head (list head-add "\n") ) rows)))]
-    [(not (string-ci=? col "*"))
-     (define column-name (string-split col ","))
+    [(list? col)
      (define rows (for/list ([row (in-producer read-row '())])
-                 (define column (multiple-list-ref row (multiple-index head column-name)))
-                 (append column (list "\n"))))
+                 (define column (multiple-list-ref row (multiple-index head col)))
+                 (append column (list (get-line conditions head row)) (list "\n"))))
   (define (->string row) (string-join row "\t"))
-  (string-append* (map ->string (cons (append (multiple-list-ref head (multiple-index head column-name)) (list "\n")) rows)))]
+  (string-append* (map ->string (cons (append (multiple-list-ref head (multiple-index head col)) (list head-add "\n")) rows)))]
     [else (error 'помилка "невірно введено умову WHERE. Будь ласка, спробуйте ще")]))
 ;--------------------------------------------------------case-----------------------------------------------------------------------
 
