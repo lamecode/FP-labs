@@ -15,12 +15,15 @@
                           (string-ci=? (second before-case) "*"))
                        (string-ci=? (first after-end) "END")
                        (string-ci=? (second after-end) "AS")
-                       (string-ci=? (fourth after-end) "FROM")))
+                       (string-ci=? (fourth after-end) "FROM")
+                       (string-contains? command " ELSE ")
+                       (string-contains? command " WHEN ")))
   (when (not syntax)
     (error 'помилка "невірно введено команду SELECT..CASE. Будь ласка, спробуйте ще"))
    (define head-add (third after-end))
-   (define conditions (remove-duplicates (string-split (string-join (string-split (substring command
+   (define temp (remove-duplicates (string-split (string-join (string-split (substring command
                                       (+ (string-contains command "CASE") 4) (string-contains command " END")) "\"") "") " WHEN ")))
+   (define conditions (append (get-n temp (- (length temp) 1)) (string-split (car (list-tail temp (- (length temp) 1))) " ELSE ")))
   conditions)
 ;--------------------------------------------------------case-----------------------------------------------------------------------
 

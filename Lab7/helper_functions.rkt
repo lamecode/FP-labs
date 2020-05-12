@@ -41,6 +41,13 @@
              (and #t (check-cols (cdr lst) head))
              #f)))
 
+(define (get-n lst index)
+  (define (helper-function llst start)
+      (if (= start index)
+          (list)
+          (append (list (car llst)) (helper-function (cdr llst) (+ start 1)))))
+  (helper-function lst 0))
+
 (define (union-check lst)
   (cond
     [(or (empty? lst) (= (length lst) 1)) (list )]
