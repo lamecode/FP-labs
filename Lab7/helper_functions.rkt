@@ -36,7 +36,7 @@
 
 (define (check-cols lst head)
   (if (empty? lst)
-      #t (if (and (ismember? (substring (car lst) 0 (- (string-length (car lst)) 1)))
+      #t (if (and (ismember? (substring (car lst) 0 (- (string-length (car lst)) 1)) head)
                  (string-ci=? (substring (car lst) (- (string-length (car lst)) 1)) ","))
              (and #t (check-cols (cdr lst) head))
              #f)))

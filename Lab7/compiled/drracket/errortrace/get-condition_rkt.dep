@@ -1,1 +1,0 @@
-("7.6" racket ("8d2899826c1b36f8fbc335efa556becce4f80be3" . "e504f113f43bfa3be6efd6fd1bedd4493d06f48e") #"C:\\Users\\Olya\\Documents\\GitHub\\FP-labs\\Lab7\\helper_functions.rkt" (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
