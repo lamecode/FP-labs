@@ -1,0 +1,1 @@
+("7.6" racket ("dfd227fea9f863a425a808c28fbba71d59dbf47f" . "1de5f565a0af49c234e11fb51176392ef07a77f5") #"C:\\Users\\Olya\\Documents\\GitHub\\FP-labs\\Lab7\\make-reader.rkt" (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
