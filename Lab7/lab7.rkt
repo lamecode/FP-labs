@@ -18,10 +18,10 @@
                        (string-ci=? (fourth after-end) "FROM")))
   (when (not syntax)
     (error 'помилка "невірно введено команду SELECT..CASE. Будь ласка, спробуйте ще"))
-   (define conditions (remove-duplicates (string-split (string-join (without-spaces (string-split (substring command
-                                      (+ (string-contains command "CASE") 4) (string-contains command " END")) "\"")) "") " WHEN ")))
-  conditions
-  )
+   (define head-add (third after-end))
+   (define conditions (remove-duplicates (string-split (string-join (string-split (substring command
+                                      (+ (string-contains command "CASE") 4) (string-contains command " END")) "\"") "") " WHEN ")))
+  conditions)
 ;--------------------------------------------------------case-----------------------------------------------------------------------
 
 ;--------------------------------------------------------initialazer-----------------------------------------------------------------------
