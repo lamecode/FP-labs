@@ -1,5 +1,5 @@
 #lang racket
-(require "make-reader.rkt")
+(require "make-reader.rkt" "get-condition.rkt")
 (provide (all-defined-out))
 
 (define (multiple-index lst strings)
@@ -48,6 +48,18 @@
           (append (list (car llst)) (helper-function (cdr llst) (+ start 1)))))
   (helper-function lst 0))
 
+(define (get-line lst head row)
+     (cond
+       [(empty? lst) (error 'empty list)]
+       [(= (length lst) 1) (car lst)]
+       [(> (length lst) 1)
+        (define part (string-split (car lst) " THEN "))
+             (if (not (= (length part) 2))
+                 (error 'помилка)
+                 (if (check-single-condition (string-join (string-split (first part) " ") "") head row)
+                     (second part)
+                     (get-line (cdr lst) head row)))]))
+       
 (define (union-check lst)
   (cond
     [(or (empty? lst) (= (length lst) 1)) (list )]

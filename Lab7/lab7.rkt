@@ -2,7 +2,7 @@
 (require srfi/13)
 (require "helper_functions.rkt" "get-condition.rkt" "make-reader.rkt")
 
-;SELECT row, col, CASE WHEN Quantity > 30 THEN "The quantity is greater than 30" WHEN Quantity = 30 THEN "The quantity is 30" ELSE "The quantity is under 30" END AS QuantityText FROM map_zal-skl9.csv
+;SELECT * CASE WHEN row > 5 THEN "Рядок більший за 5" WHEN row = 5 THEN "Рядок рівний 5" ELSE "Рядок менший за 5" END AS QuantityText FROM map_zal-skl9.csv
 ;--------------------------------------------------------case-----------------------------------------------------------------------
 (define (case port command)
    (define read-row (make-reader port))
@@ -12,7 +12,7 @@
    (define syntax (and (string-ci=? (first before-case) "SELECT")
                        (string-ci=? (list-ref before-case (- (length before-case) 1)) "CASE")
                        (or(check-cols (remove "CASE" (cdr before-case)) head)
-                          (string-ci=? (second before-case) "*"))
+                          (and (string-ci=? (second before-case) "*") (= (length before-case) 3)))
                        (string-ci=? (first after-end) "END")
                        (string-ci=? (second after-end) "AS")
                        (string-ci=? (fourth after-end) "FROM")
@@ -23,8 +23,24 @@
    (define head-add (third after-end))
    (define temp (remove-duplicates (string-split (string-join (string-split (substring command
                                       (+ (string-contains command "CASE") 4) (string-contains command " END")) "\"") "") " WHEN ")))
+   (define col (if (= (length before-case) 3)
+       (second before-case)
+       (map (lambda (x) (substring x 0 (- (string-length x) 1))) (remove "CASE" (cdr before-case)))))
    (define conditions (append (get-n temp (- (length temp) 1)) (string-split (car (list-tail temp (- (length temp) 1))) " ELSE ")))
-  conditions)
+    (cond
+    [(string-ci=? col "*")
+      (define rows (for/list ([row (in-producer read-row '())])
+                     (append row (list (get-line conditions head row)) (list "\n"))))
+  (define (->string row) (string-join row "\t"))
+  (string-append* (map ->string (cons (append head (list head-add "\n") ) rows)))]
+    [(not (string-ci=? col "*"))
+     (define column-name (string-split col ","))
+     (define rows (for/list ([row (in-producer read-row '())])
+                 (define column (multiple-list-ref row (multiple-index head column-name)))
+                 (append column (list "\n"))))
+  (define (->string row) (string-join row "\t"))
+  (string-append* (map ->string (cons (append (multiple-list-ref head (multiple-index head column-name)) (list "\n")) rows)))]
+    [else (error 'помилка "невірно введено умову WHERE. Будь ласка, спробуйте ще")]))
 ;--------------------------------------------------------case-----------------------------------------------------------------------
 
 ;--------------------------------------------------------initialazer-----------------------------------------------------------------------
@@ -34,8 +50,8 @@
 (when (<= (string-length option) 6) (error 'помилка "невірно введено команду. Будь ласка, спробуйте ще"))
   (cond
     [(and (string-ci=? (substring option 0 6) "SELECT") (string-contains? option "CASE"))
-    (case (open-input-string (file->string (list-ref (string-split option " ")
-                                             (- (length (string-split option " ")) 1)))) option)])
+    (display (case (open-input-string (file->string (list-ref (string-split option " ")
+                                             (- (length (string-split option " ")) 1)))) option))])
 ;    [(and (string-ci=? (substring option 0 6) "SELECT") (string-contains? option "GROUP BY") (string-contains? option "HAVING"))
 ;     (display (having (open-input-string (file->string (list-ref (string-split option " ")
 ;                                             (- (length (string-split option " ")) 1))))

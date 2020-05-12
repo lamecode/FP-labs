@@ -1,5 +1,5 @@
 #lang racket
-(require "helper_functions.rkt")
+(require "is-member.rkt")
 (provide check-single-condition)
 
 (define (check-single-condition condition head row)
