@@ -33,5 +33,15 @@
   (writeln (loop2 (loop1 A i) j))
 )
 
-(sort '(1 22 6534 65 33  64 32 2 22 34) (length '(1 22 6534 65 33  64 32 2 22 34)))
+(define (stream-for-n-steps s n)
+  (if (= n 0)
+      null
+      (cons (car (s)) (stream-for-n-steps (cdr (s)) (- n 1)))))
+
+(define funny-number-stream (letrec ([f (lambda (x) (cons x (lambda () (f (* x -2)))))])
+                              (lambda () (f 1))))
+
+
+(define lst (stream-for-n-steps funny-number-stream (string->number (read-line (current-input-port)))))
+(sort lst (length lst))
 
